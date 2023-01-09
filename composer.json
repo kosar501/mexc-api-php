@@ -1,0 +1,23 @@
+{
+    "name": "kosar/mexc-php-api",
+    "type": "library",
+    "description": "Implementation of mexc exchange php api",
+    "license": "MIT",
+    "keywords": ["mexc","mxc"],
+    "minimum-stability": "dev",
+    "autoload": {
+        "psr-4": {
+            "Kosar\\MexcPhpApi\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Kosar Ahmadi",
+            "email": "kosar501.75@gmail.com"
+        }
+    ],
+    "require": {
+        "ext-json": "*",
+        "guzzlehttp/guzzle": "^7.3"
+    }
+}
