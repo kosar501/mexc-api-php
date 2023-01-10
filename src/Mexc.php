@@ -20,11 +20,32 @@ class Mexc
         $this->proxy = $proxy;
     }
 
+    //****************** Quote ******************//
+
+    /**
+     * @param $symbol
+     * @return mixed
+     * @throws GuzzleException
+     * returns single coin or All coins ticker information*
+     * symbol ex: ETH_USDT
+     */
+    public function ticker($symbol = null)
+    {
+        $data = [
+            'symbol' => $symbol,
+        ];
+
+        return $this->request('/api/v1/contract/ticker?'. http_build_query($data), 'get');
+    }
+
+    //****************** Quote******************//
+
     //****************** Wallet Endpoint ******************//
 
     /**
      * Weight = 10
      * @throws GuzzleException
+     * returns All coins name && networks list
      */
     public function exchangeInfo()
     {
@@ -34,6 +55,7 @@ class Mexc
         ];
         return $this->request('/api/v3/capital/config/getall?' . http_build_query($data), 'get');
     }
+
     //****************** Wallet Endpoint ******************//
 
     //****************** Private Functions ******************//
