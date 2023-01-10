@@ -1,5 +1,5 @@
 {
-    "name": "kosar/mexc-php-api",
+    "name": "kosar501/Mexc-api-php",
     "type": "library",
     "description": "Implementation of mexc exchange php api",
     "license": "MIT",
@@ -7,7 +7,7 @@
     "minimum-stability": "dev",
     "autoload": {
         "psr-4": {
-            "Kosar\\MexcPhpApi\\": "src/"
+            "Kosar501\\MexcPhpApi\\": "src/"
         }
     },
     "authors": [

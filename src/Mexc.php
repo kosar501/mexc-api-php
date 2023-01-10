@@ -1,6 +1,6 @@
 <?php
 
-namespace Kosar\MexcPhpApi;
+namespace Kosar501\MexcPhpApi;
 
 use Exception;
 use GuzzleHttp\Client;
