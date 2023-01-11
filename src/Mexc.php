@@ -34,7 +34,7 @@ class Mexc
             'symbol' => $symbol,
         ];
 
-        return $this->request('/api/v3/ticker/price' . http_build_query($data), 'get');
+        return $this->request('/api/v3/ticker/price?' . http_build_query($data), 'get');
     }
     //****************** Quote******************//
 
@@ -59,7 +59,7 @@ class Mexc
      * @param $network
      * @return mixed
      * @throws GuzzleException
-     * get deposit address for selected coin && network
+     * get Already generated deposit address for selected coin && network
      */
     public function getDepositAddress($coin, $network = null)
     {
@@ -71,6 +71,25 @@ class Mexc
         ];
         $data['signature'] = $this->generateSignature($data);
         return $this->request('/api/v3/capital/deposit/address?' . http_build_query($data), 'get');
+    }
+
+    /**
+     * @param $coin
+     * @param $network
+     * @return mixed
+     * @throws GuzzleException
+     * generate deposit address for selected coin && network
+     */
+    public function generateDepositAddress($coin, $network = null)
+    {
+        $data = [
+            'coin' => $coin,
+            'network' => $network,
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+        return $this->request('/api/v3/capital/deposit/address?' . http_build_query($data));
     }
     //****************** Wallet Endpoint ******************//
 
