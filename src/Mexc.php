@@ -8,26 +8,25 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Mexc
 {
-    protected $api;
+    protected $api_key;
     protected $api_secret;
     protected $proxy;
     protected $recvWindow = 5000;
 
     function __construct($api_key, $api_secret, $proxy = null)
     {
-        $this->api = $api_key;
+        $this->api_key = $api_key;
         $this->api_secret = $api_secret;
         $this->proxy = $proxy;
     }
 
     //****************** Quote ******************//
-
     /**
      * @param $symbol
      * @return mixed
      * @throws GuzzleException
-     * returns single coin or All coins ticker information*
-     * symbol ex: ETH_USDT
+     * symbol price ticker >> all price tickers
+     * symbol ex: ETHUSDT
      */
     public function ticker($symbol = null)
     {
@@ -35,13 +34,11 @@ class Mexc
             'symbol' => $symbol,
         ];
 
-        return $this->request('/api/v1/contract/ticker?'. http_build_query($data), 'get');
+        return $this->request('/api/v3/ticker/price' . http_build_query($data), 'get');
     }
-
     //****************** Quote******************//
 
     //****************** Wallet Endpoint ******************//
-
     /**
      * Weight = 10
      * @throws GuzzleException
@@ -53,9 +50,28 @@ class Mexc
             'timestamp' => $this->generateTimestamp(),
             'recvWindow' => $this->recvWindow
         ];
+        $data['signature'] = $this->generateSignature($data);
         return $this->request('/api/v3/capital/config/getall?' . http_build_query($data), 'get');
     }
 
+    /**
+     * @param $coin
+     * @param $network
+     * @return mixed
+     * @throws GuzzleException
+     * get deposit address for selected coin && network
+     */
+    public function getDepositAddress($coin, $network = null)
+    {
+        $data = [
+            'coin' => $coin,
+            'network' => $network,
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+        return $this->request('/api/v3/capital/deposit/address?' . http_build_query($data), 'get');
+    }
     //****************** Wallet Endpoint ******************//
 
     //****************** Private Functions ******************//
@@ -66,6 +82,13 @@ class Mexc
     {
         $getTime = $this->request('/open/api/v2/common/timestamp', 'get');
         return $getTime->data;
+    }
+
+    private function generateSignature($data)
+    {
+        $query = http_build_query($data);
+        $query = str_replace(['%40'], ['@'], $query); //if send data type "e-mail" then binance return: [Signature for this request is not valid.]
+        return hash_hmac('sha256', $query, $this->api_secret);
     }
 
     /**
@@ -80,7 +103,7 @@ class Mexc
             'proxy' => $this->proxy,
             'headers' => [
                 'User-Agent' => 'Mozilla/4.0 (compatible; PHP Mexc API)',
-                'X-MEXC-APIKEY' => $this->api,
+                'X-MEXC-APIKEY' => $this->api_key,
                 'Content-Type' => 'application/json'
             ]
         ];
