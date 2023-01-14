@@ -45,6 +45,26 @@ class Mexc
     //****************** Orders ******************//
     /**
      * @param string $symbol
+     * @param string $origClientOrderId
+     * @param string $orderId
+     * @throws GuzzleException
+     * Get order Status
+     */
+    public function orderHistory($symbol, $orderId = null, $origClientOrderId = null)
+    {
+        $data = [
+            'symbol' => $symbol,
+            'orderId' => $orderId,
+            'origClientOrderId' => $origClientOrderId,
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+        return $this->request('/api/v3/order?' . http_build_query($data), 'get');
+    }
+
+    /**
+     * @param string $symbol
      * @param string{OrderSideEnum::keys} $side
      * @param string{OrderTypeEnum::keys} $type
      * @param Decimal $quantity
@@ -52,6 +72,7 @@ class Mexc
      * @param Decimal $price
      * @param STRING $newClientOrderId
      * @throws GuzzleException
+     * submit market/limit order to buy or sell
      */
     public function addOrder($symbol, $side, $type, $quantity = null, $quoteOrderQty = null, $price = null, $newClientOrderId = null)
     {
@@ -163,13 +184,87 @@ class Mexc
      */
     public function findTaxIdExistInDepositHistory($txId, $coin = null, $status = null, $startTime = null, $endTime = null, $limit = null)
     {
-        $history = $this->historyOfDeposit($coin, $status, $startTime, $endTime, $limit );
-        if(is_array($history))
-            foreach ( $history as $depositItem )
-                if( $depositItem->txId == trim($txId) )
-                    return  [$depositItem];
+        $history = $this->historyOfDeposit($coin, $status, $startTime, $endTime, $limit);
+        if (is_array($history))
+            foreach ($history as $depositItem)
+                if ($depositItem->txId == trim($txId))
+                    return [$depositItem];
         return [];
     }
+
+
+    /**
+     * @param string $coin
+     * @param string $withdrawAddress Withdraw address only support address which added in withdrawal settings on website.
+     * @param string $withdrawAmount
+     * @param string $withdrawNetwork
+     * @param string $memo (If memo is required in the address, it must be passed in)
+     * @param string $withdrawOrderId
+     * @param string $remark
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function withdraw($coin, $withdrawAddress, $withdrawAmount, $withdrawNetwork = null, $memo = null, $withdrawOrderId = null, $remark = null)
+    {
+        $data = [
+            'coin' => $coin,
+            'withdrawAddress' => $withdrawAddress,
+            'withdrawAmount' => $withdrawAmount,
+            'withdrawNetwork' => $withdrawNetwork,
+            'memo' => $memo,
+            'withdrawOrderId' => $withdrawOrderId,
+            'remark' => $remark,
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+        return $this->request('/api/v3/capital/withdraw/apply?' . http_build_query($data));
+    }
+
+    /**
+     * @param string $coin
+     * @param string $status
+     * @param string $limit default:1000,max:1000
+     * @param string $startTime default: 90 days ago from current time
+     * @param string $endTime default:current time
+     * @return mixed
+     * @throws GuzzleException
+     */
+    public function historyOfWithdraw($coin = null, $status = null, $limit = null, $startTime = null, $endTime = null)
+    {
+        $data = [
+            'coin' => $coin,
+            'status' => $status,
+            'limit' => $limit,
+            'startTime' => $startTime,
+            'endTime' => $endTime,
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+        return $this->request('/api/v3/capital/withdraw/history?' . http_build_query($data), 'get');
+    }
+
+    /**
+     * @param string $WithdrawId
+     * @param string $coin default: null
+     * @param string $status default: null
+     * @param string $startTime default: 90 days ago from current time
+     * @param string $endTime default:current time
+     * @param string $limit default:1000,max:1000
+     * @return array
+     * @throws GuzzleException
+     */
+    public function findWithdrawIDExistInWithdrawHistory($WithdrawId, $coin = null, $status = null, $startTime = null, $endTime = null, $limit = null)
+    {
+        $history = $this->historyOfWithdraw($coin, $status, $startTime, $endTime, $limit);
+        if (is_array($history))
+            foreach ($history as $withdrawItem)
+                if ($withdrawItem->id == trim($WithdrawId))
+                    return [$withdrawItem];
+        return [];
+    }
+
     //****************** Wallet Endpoint ******************//
 
     //****************** Private Functions ******************//
