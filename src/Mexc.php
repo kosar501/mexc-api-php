@@ -124,6 +124,31 @@ class Mexc
         $data['signature'] = $this->generateSignature($data);
         return $this->request('/api/v3/capital/deposit/address?' . http_build_query($data));
     }
+
+    /**
+     * @param string $coin
+     * @param string $status
+     * @param string $startTime default: 90 days ago from current time
+     * @param string $endTime default:current time
+     * @param string $limit default:1000,max:1000
+     * @return mixed
+     * @throws GuzzleException
+     * generate deposit address for selected coin && network
+     */
+    public function depositHistory($coin = null, $status = null, $startTime = null, $endTime = null, $limit = null)
+    {
+        $data = [
+            'coin' => $coin,
+            'status' => $status,
+            'startTime' => $startTime,
+            'endTime' => $endTime,
+            'limit' => $limit,
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+        return $this->request('/api/v3/capital/deposit/hisrec?' . http_build_query($data), 'get');
+    }
     //****************** Wallet Endpoint ******************//
 
     //****************** Private Functions ******************//
