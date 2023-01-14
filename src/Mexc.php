@@ -135,7 +135,7 @@ class Mexc
      * @throws GuzzleException
      * generate deposit address for selected coin && network
      */
-    public function depositHistory($coin = null, $status = null, $startTime = null, $endTime = null, $limit = null)
+    public function historyOfDeposit($coin = null, $status = null, $startTime = null, $endTime = null, $limit = null)
     {
         $data = [
             'coin' => $coin,
@@ -148,6 +148,27 @@ class Mexc
         ];
         $data['signature'] = $this->generateSignature($data);
         return $this->request('/api/v3/capital/deposit/hisrec?' . http_build_query($data), 'get');
+    }
+
+    /**
+     * Check special Tx_id exist in depostit history or not
+     * @param string $txId
+     * @param string $coin default: null
+     * @param string $status default: null
+     * @param string $startTime default: 90 days ago from current time
+     * @param string $endTime default:current time
+     * @param string $limit default:1000,max:1000
+     * @return array
+     * @throws GuzzleException
+     */
+    public function findTaxIdExistInDepositHistory($txId, $coin = null, $status = null, $startTime = null, $endTime = null, $limit = null)
+    {
+        $history = $this->historyOfDeposit($coin, $status, $startTime, $endTime, $limit );
+        if(is_array($history))
+            foreach ( $history as $depositItem )
+                if( $depositItem->txId == trim($txId) )
+                    return  [$depositItem];
+        return [];
     }
     //****************** Wallet Endpoint ******************//
 
