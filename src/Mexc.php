@@ -21,6 +21,7 @@ class Mexc
     }
 
     //****************** Quote ******************//
+
     /**
      * @param $symbol
      * @return mixed
@@ -37,6 +38,43 @@ class Mexc
         return $this->request('/api/v3/ticker/price?' . http_build_query($data), 'get');
     }
     //****************** Quote******************//
+
+    //****************** Orders ******************//
+    /**
+     * @param $symbol
+     * @param $side => BUY/SELL
+     * @param $type => LIMIT (Limit order) /
+     * MARKET (Market order)/LIMIT_MAKER (Limit maker order) /
+     * IMMEDIATE_OR_CANCEL (Immediate or cancel order) /
+     * FILL_OR_KILL (Fill or kill order),
+     * @param $quantity
+     * @param $quoteOrderQty
+     * @param $price
+     * @param $newClientOrderId
+     * return value $order_status => NEW Uncompleted /
+     * FILLED Filled /
+     * PARTIALLY_FILLED Partially filled /
+     * CANCELED Canceled /
+     * PARTIALLY_CANCELED Partially canceled
+     * @throws GuzzleException
+     */
+    public function addOrder($symbol, $side, $type, $quantity = null, $quoteOrderQty = null, $price = null, $newClientOrderId = null)
+    {
+        $data = [
+            'symbol' => $symbol,
+            'side' => $side,
+            'type' => $type,
+            'quantity' => $quantity,
+            'quoteOrderQty' => $quoteOrderQty,
+            'price' => $price,
+            'newClientOrderId' => $newClientOrderId,
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+        return $this->request('/api/v3/order?' . http_build_query($data));
+    }
+    //****************** Orders ******************//
 
     //****************** Wallet Endpoint ******************//
     /**
