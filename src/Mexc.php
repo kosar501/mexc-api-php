@@ -2,9 +2,12 @@
 
 namespace Kosar501\MexcPhpApi;
 
+use Decimal\Decimal;
 use Exception;
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
+use Kosar501\MexcPhpApi\Enums\OrderSideEnum;
+use Kosar501\MexcPhpApi\Enums\OrderStatusEnum;
 
 class Mexc
 {
@@ -41,21 +44,13 @@ class Mexc
 
     //****************** Orders ******************//
     /**
-     * @param $symbol
-     * @param $side => BUY/SELL
-     * @param $type => LIMIT (Limit order) /
-     * MARKET (Market order)/LIMIT_MAKER (Limit maker order) /
-     * IMMEDIATE_OR_CANCEL (Immediate or cancel order) /
-     * FILL_OR_KILL (Fill or kill order),
-     * @param $quantity
-     * @param $quoteOrderQty
-     * @param $price
-     * @param $newClientOrderId
-     * return value $order_status => NEW Uncompleted /
-     * FILLED Filled /
-     * PARTIALLY_FILLED Partially filled /
-     * CANCELED Canceled /
-     * PARTIALLY_CANCELED Partially canceled
+     * @param string $symbol
+     * @param string{OrderSideEnum::keys} $side
+     * @param string{OrderTypeEnum::keys} $type
+     * @param Decimal $quantity
+     * @param Decimal $quoteOrderQty
+     * @param Decimal $price
+     * @param STRING $newClientOrderId
      * @throws GuzzleException
      */
     public function addOrder($symbol, $side, $type, $quantity = null, $quoteOrderQty = null, $price = null, $newClientOrderId = null)

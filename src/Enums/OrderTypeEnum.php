@@ -10,4 +10,18 @@ class OrderTypeEnum
     const FILL_OR_KILL = 'FILL_OR_KILL';
 
 
+    /**
+     * Gets constants list
+     * @return array
+     */
+    public static function keys()
+    {
+        return [
+            self::LIMIT,
+            self::MARKET,
+            self::LIMIT_MAKER,
+            self::IMMEDIATE_OR_CANCEL,
+            self::FILL_OR_KILL,
+        ];
+    }
 }
