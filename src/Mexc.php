@@ -208,9 +208,9 @@ class Mexc
     {
         $data = [
             'coin' => $coin,
-            'withdrawAddress' => $withdrawAddress,
-            'withdrawAmount' => $withdrawAmount,
-            'withdrawNetwork' => $withdrawNetwork,
+            'address' => $withdrawAddress,
+            'amount' => $withdrawAmount,
+            'network' => $withdrawNetwork,
             'memo' => $memo,
             'withdrawOrderId' => $withdrawOrderId,
             'remark' => $remark,
