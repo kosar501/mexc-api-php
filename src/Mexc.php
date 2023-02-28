@@ -42,6 +42,23 @@ class Mexc
     }
     //****************** Quote******************//
 
+
+    //****************** Account ******************//
+
+    /**
+     * @param $symbol
+     * @return mixed
+     * @throws GuzzleException
+     * symbol price ticker >> all price tickers
+     * symbol ex: ETHUSDT
+     */
+    public function balances()
+    {
+        $response = $this->request('/api/v3/account', 'get');
+        return !is_array($response) && @$response->balances ?: (@$response['balances'] ?: []);
+    }
+    //****************** Account******************//
+
     //****************** Orders ******************//
     /**
      * @param string $symbol
