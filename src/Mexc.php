@@ -54,7 +54,13 @@ class Mexc
      */
     public function balances()
     {
-        $response = $this->request('/api/v3/account', 'get');
+        $data = [
+            'timestamp' => $this->generateTimestamp(),
+            'recvWindow' => $this->recvWindow
+        ];
+        $data['signature'] = $this->generateSignature($data);
+
+        $response = $this->request('/api/v3/account?' . http_build_query($data), 'get');
         return !is_array($response) && @$response->balances ?: (@$response['balances'] ?: []);
     }
     //****************** Account******************//
