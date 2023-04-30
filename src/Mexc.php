@@ -52,7 +52,7 @@ class Mexc
      * symbol price ticker >> all price tickers
      * symbol ex: ETHUSDT
      */
-    public function balances()
+    public function balances(): mixed
     {
         $data = [
             'timestamp' => $this->generateTimestamp(),
