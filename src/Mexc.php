@@ -24,7 +24,6 @@ class Mexc
     }
 
     //****************** Quote ******************//
-
     /**
      * @param $symbol
      * @return mixed
@@ -44,7 +43,6 @@ class Mexc
 
 
     //****************** Account ******************//
-
     /**
      * @param $symbol
      * @return mixed
@@ -287,7 +285,6 @@ class Mexc
                     return [$withdrawItem];
         return [];
     }
-
     //****************** Wallet Endpoint ******************//
 
     //****************** Private Functions ******************//
@@ -334,6 +331,7 @@ class Mexc
 
         return json_decode($response->getBody());
     }
+    //****************** Private Functions ******************//
 
 
 }
