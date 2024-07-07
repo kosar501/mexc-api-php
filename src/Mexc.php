@@ -11,6 +11,7 @@ use Kosar501\MexcPhpApi\Enums\OrderStatusEnum;
 
 class Mexc
 {
+    fgrhterhrthh
     protected $api_key;
     protected $api_secret;
     protected $proxy;
